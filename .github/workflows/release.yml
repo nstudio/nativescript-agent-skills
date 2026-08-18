@@ -1,7 +1,8 @@
 name: release
 # Tag vX.Y.Z (matching package.json) → publish to npm with provenance + GitHub release.
-# Requires npm trusted publishing (OIDC) configured for @nstudio/nativescript-agent-skills,
-# or set NPM_TOKEN and swap the publish step to use it.
+# Requires npm trusted publishing (OIDC) configured for @nstudio/nativescript-agent-skills
+# (publisher: this repo, workflow release.yml). To use a token instead, add registry-url back
+# to setup-node and pass NODE_AUTH_TOKEN from a secret on the publish step.
 on:
   push:
     tags: ['v*.*.*']
@@ -13,8 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # No registry-url here: setup-node would write an _authToken placeholder into .npmrc,
+      # and npm then uses that instead of the OIDC identity (→ 404 on publish).
       - uses: actions/setup-node@v4
-        with: { node-version: 22, registry-url: 'https://registry.npmjs.org' }
+        with: { node-version: 22 }
       - run: npm i -g npm@latest   # OIDC trusted publishing needs npm ≥ 11.5
       - run: node evals/lint-skills.mjs && npx -y @tanstack/intent@latest validate
       - name: Version must match tag
