@@ -1,6 +1,10 @@
 ---
 name: ns-angular-vite-migration
 description: Use when moving a NativeScript Angular project from @nativescript/webpack to @nativescript/vite (or starting one on Vite) — the version set that works together, the analogjs patch, config files, and the two launch crashes (NG0210 document, Android FORTIFY fseeko) with fixes.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # NativeScript Angular on Vite (@nativescript/vite)
@@ -35,10 +39,10 @@ the switch; incremental iOS builds ~11 s.
 ```
 
 ## The analogjs patch
-Copy `patches/@analogjs+vite-plugin-angular+2.6.3.patch` from the reference project. It adds an
-`externalRuntimeStyles` option that `@nativescript/vite/configuration/angular.js` sets to `false`
-(NativeScript can't consume runtime-URL component styles). patch-package warns about the version
-mismatch (2.6.3 patch on 2.7.0) but applies cleanly.
+Copy `assets/patches/@analogjs+vite-plugin-angular+2.6.3.patch` (bundled next to this SKILL.md) into
+the project's `patches/` folder. It adds an `externalRuntimeStyles` option that
+`@nativescript/vite/configuration/angular.js` sets to `false` (NativeScript can't consume runtime-URL
+component styles). patch-package warns about the version mismatch (2.6.3 patch on 2.7.0) but applies cleanly.
 
 ## Config files
 `vite.config.mts`

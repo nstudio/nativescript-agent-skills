@@ -1,20 +1,23 @@
 ---
 name: ns-app-icons-and-launch-assets
 description: Use when a NativeScript app still shows the template icon/launch screen — generate a 1024 icon programmatically and install it at every iOS and Android size, set launch screen colours, and fix display names.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # Icons, launch screen, names
 
-## Generate a 1024×1024 icon (Python + PIL example)
-```python
-from PIL import Image, ImageDraw, ImageFilter
-S=1024; img=Image.new('RGB',(S,S),(3,6,14)); px=img.load()
-# gradient bg, stars, a planet limb with rim light + a blurred glow layer composited via Image.alpha_composite …
-img.convert('RGB').save('icon-1024.png')
+## Generate a 1024×1024 icon (Python + PIL, no numpy)
+Bundled: `scripts/make-icon.py` (dark gradient + stars + planet limb with rim light and glow — edit the palette or the shapes):
+```bash
+python3 scripts/make-icon.py icon-1024.png --bg 3,6,14 --accent 120,170,255
 ```
-(PIL is usually available on macOS python3; numpy is not required.)
+Structure that matters: opaque RGB, exactly 1024×1024, no alpha (Xcode rejects alpha in the App Store icon). PIL is usually present on macOS `python3`; the script is ~50 lines if you want to inline your own drawing.
 
 ## iOS: fill the existing appiconset (keeps Contents.json valid)
+Bundled: `scripts/install-icons.sh icon-1024.png` does both platforms below. By hand:
 ```bash
 D=App_Resources/iOS/Assets.xcassets/AppIcon.appiconset
 for f in $D/icon-*.png; do sz=$(sips -g pixelWidth "$f" | tail -1 | awk '{print $2}'); sips -Z $sz icon-1024.png --out "$f" >/dev/null; done

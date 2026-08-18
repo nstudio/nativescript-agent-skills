@@ -1,6 +1,10 @@
 ---
 name: ns-custom-view-platform-split
 description: Use when building a custom NativeScript view with different native renderers per platform (e.g. SceneKit on iOS, Canvas on Android) — the common/ios/android/d.ts file split, shared gesture + Property handling, and Angular registration.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # Custom View with a per-platform renderer

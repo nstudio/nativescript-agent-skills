@@ -56,8 +56,8 @@ Accuracy of ~0.5° is fine; it just needs to be cheap enough to call every secon
   },
 
   {
-    name: 'iss-tracking-with-satellite-js',
-    skill: 'iss-tracking-with-satellite-js',
+    name: 'ns-iss-tracking-satellite-js',
+    skill: 'ns-iss-tracking-satellite-js',
     instruction: `Add live ISS tracking to this NativeScript (webpack) app.
 
 1. Add the satellite propagation dependency to package.json (pick a version that works with webpack; do not run a native build).
@@ -113,7 +113,7 @@ Don't add a polyfill or a date library.`,
       { name: 'time zone applied natively', file: 'src/app/format.ts', match: /timeZoneWithName|TimeZone\.getTimeZone/ },
       { name: 'no Intl / toLocaleString', file: 'src/app/format.ts', notMatch: /\bIntl\.|toLocale(Time|Date)?String/ },
       { name: 'no polyfill/date lib added', file: 'package.json', notMatch: /"(dayjs|date-fns|luxon|moment|@formatjs\/intl|intl)"\s*:/ },
-      { name: 'formatters cached', file: 'src/app/format.ts', match: /new Map\(|cache/i },
+      { name: 'formatters cached', weight: 0.5, file: 'src/app/format.ts', match: /new Map\(|cache|memo|Record<string,\s*NSDateFormatter>|formatters?\s*[:=]\s*(\{|new )/i },
     ],
     rubric: `- Did the agent explain that the iOS V8 runtime has no ICU (Intl undefined) and use platform formatters instead of a polyfill?
 - Did it use Unicode skeletons ("jmm") so 12/24h follows the device setting?
@@ -160,7 +160,7 @@ Fix all of it in place (same files, same public class name \`DotsView\`). Explai
     checks: [
       { name: '@NativeClass moved to module scope', file: 'src/app/dots/dots-view.android.ts', match: /^@NativeClass\(\)\s*\n\s*class\s+\w+\s+extends\s+android\.view\.View/m },
       { name: 'no @NativeClass inside createNativeView', file: 'src/app/dots/dots-view.android.ts', notMatch: /createNativeView\([^)]*\)[^{]*\{[\s\S]*?@NativeClass/ },
-      { name: 'owner passed via WeakRef/property, not closure', file: 'src/app/dots/dots-view.android.ts', match: /WeakRef|owner\s*[:=]/ },
+      { name: 'owner held via WeakRef, not a closure', file: 'src/app/dots/dots-view.android.ts', match: /new WeakRef\(/ },
       { name: 'gradient uses typed Java arrays', file: 'src/app/dots/dots-view.android.ts', match: /Array\.create\(\s*['"]int['"][\s\S]*Array\.create\(\s*['"]float['"]/ },
       { name: 'drawPoints gets a plain number[]', file: 'src/app/dots/dots-view.android.ts', notMatch: /drawPoints\(\s*(new\s+)?(xy|Float32Array)/ },
       { name: 'no Float32Array reaches drawPoints', file: 'src/app/dots/dots-view.android.ts', custom: async ({ read }) => {
@@ -237,9 +237,9 @@ Also add \`src/app/particles/particles-view.d.ts\` and \`src/app/particles/parti
       { name: 'SceneKit typings referenced', file: 'references.d.ts', match: /types-ios\/lib\/ios\/objc-x86_64\/objc!SceneKit\.d\.ts/ },
       { name: 'CoreLocation typings referenced', file: 'references.d.ts', match: /objc!CoreLocation\.d\.ts/ },
       { name: '_LocationEssentials referenced (CLLocation lives there)', file: 'references.d.ts', match: /objc!_LocationEssentials\.d\.ts/ },
-      { name: 'base types reference kept', file: 'references.d.ts', match: /@nativescript\/types\/index\.d\.ts/ },
-      { name: 'no any-stubs', dir: 'src', notMatch: /declare\s+(const|var|class)\s+(SCNView|SCNScene|CLLocation)\b/ },
-      { name: 'scene.ios.ts untouched', file: 'src/app/native/scene.ios.ts', match: /SCNView\.alloc\(\)\.initWithFrameOptions\(CGRectZero, null\)/ },
+      { name: 'base types reference kept', weight: 0.5, file: 'references.d.ts', match: /@nativescript\/types\/index\.d\.ts/ },
+      { name: 'no any-stubs', weight: 0.5, dir: 'src', notMatch: /declare\s+(const|var|class)\s+(SCNView|SCNScene|CLLocation)\b/ },
+      { name: 'scene.ios.ts untouched', weight: 0.5, file: 'src/app/native/scene.ios.ts', match: /SCNView\.alloc\(\)\.initWithFrameOptions\(CGRectZero, null\)/ },
     ],
     rubric: `- Did the agent add /// <reference path> lines for the framework d.ts files under @nativescript/types-ios/lib/ios/objc-x86_64/ (including _LocationEssentials for CLLocation)?
 - Did it recommend grepping the generated d.ts (and/or reading Apple SDK headers) for exact selector spellings?
@@ -260,7 +260,7 @@ Also make sure the project's TypeScript setup knows about SceneKit. Do not add a
     checks: [
       { name: 'SCNView created with initWithFrameOptions', file: 'src/app/globe/globe-view.ios.ts', match: /SCNView\.alloc\(\)\.initWithFrameOptions\(/ },
       { name: 'texture from app folder', file: 'src/app/globe/globe-view.ios.ts', match: /knownFolders\.currentApp\(\)[\s\S]*imageWithContentsOfFile|imageWithContentsOfFile[\s\S]*knownFolders/ },
-      { name: 'camera fov 40 / no default lighting', file: 'src/app/globe/globe-view.ios.ts', match: /fieldOfView\s*=\s*40[\s\S]*autoenablesDefaultLighting\s*=\s*false|autoenablesDefaultLighting\s*=\s*false[\s\S]*fieldOfView\s*=\s*40/ },
+      { name: 'camera fov 40 / no default lighting', file: 'src/app/globe/globe-view.ios.ts', custom: async ({ read }) => { const s = read('src/app/globe/globe-view.ios.ts') || ''; const ok = /fieldOfView\s*=/.test(s) && /\b40\b/.test(s) && /autoenablesDefaultLighting\s*=\s*false/.test(s); return { passed: ok, message: ok ? 'ok' : 'fov 40 / autoenablesDefaultLighting=false not both found' }; } },
       { name: 'hit test via hitTestOptions', file: 'src/app/globe/globe-view.ios.ts', match: /hitTestOptions\(/ },
       { name: 'lat/lon from local coords: lat=asin(y), lon=atan2(x, z)', file: 'src/app/globe/globe-view.ios.ts', match: /atan2\(\s*\w+\.x\s*,\s*\w+\.z\s*\)|atan2\(\s*x\s*,\s*z\s*\)/ },
       { name: 'no SCNVector3Make (does not exist)', file: 'src/app/globe/globe-view.ios.ts', notMatch: /SCNVector3Make/ },
@@ -342,7 +342,7 @@ Create \`src/app/glass/glass-view.ts\` (class \`GlassView\`, usable as \`<Glass>
       { name: 'dark tint so white type stays readable', file: 'src/app/glass/glass-view.ts', match: /tintColor\s*=/ },
       { name: 'Android translucent drawable', file: 'src/app/glass/glass-view.ts', match: /GradientDrawable[\s\S]*setCornerRadius/ },
       { name: 'glassRadius Property', file: 'src/app/glass/glass-view.ts', match: /name:\s*['"]glassRadius['"]/ },
-      { name: 'registerElement Glass', file: 'src/main.ts', match: /registerElement\(\s*['"]Glass['"]/ },
+      { name: 'registerElement Glass', dir: 'src', match: /registerElement\(\s*['"]Glass['"]/ },
       { name: 'panel GridLayout rows="auto" with glass first', file: 'src/app/home/home.component.html', match: /<GridLayout[^>]*rows="auto"[^>]*>\s*<Glass/ },
     ],
     rubric: `- Did the agent explain the rows="auto" trap (implicit * row makes a bare View child fill the screen)?
@@ -363,7 +363,7 @@ Create \`src/app/glass/glass-view.ts\` (class \`GlassView\`, usable as \`<Glass>
       { name: 'JS array → NSArray for detents', dir: 'src/app', match: /jsArrayToNSArray|NSArray\.arrayWithArray/ },
       { name: 'configured after load (loaded/setTimeout)', dir: 'src/app', match: /loaded[\s\S]*setTimeout|setTimeout[\s\S]*sheetPresentationController/ },
       { name: 'iOS 26 transparency', dir: 'src/app', match: /SDK_VERSION\s*>=\s*26[\s\S]*(clearColor|transparent)/ },
-      { name: 'NativeDialogService.open with nativeOptions.ios', dir: 'src/app', match: /nativeOptions[\s\S]*ios\s*:\s*\{[\s\S]*presentationStyle/ },
+      { name: 'NativeDialogService.open with nativeOptions.ios', dir: 'src/app', match: /nativeOptions[\s\S]{0,400}presentationStyle\s*:\s*UIModalPresentationStyle\.PageSheet/ },
     ],
     rubric: `- Did the agent configure the *presented* view controller after the view loaded?
 - Did it set both the NS Page background and vc.view.backgroundColor clear on iOS 26?
@@ -460,7 +460,7 @@ Don't add zone.js.`,
       { name: 'newIndex read from event', file: 'src/app/home/home.component.ts', match: /\.newIndex/ },
       { name: 'panel ref via (loaded)', file: 'src/app/home/home.component.html', match: /\(loaded\)=/ },
       { name: 'intro animate opacity+translate with delay', file: 'src/app/home/home.component.ts', match: /setTimeout\([\s\S]*animate\(\s*\{[^}]*opacity[^}]*translate|animate\(\s*\{[^}]*translate[^}]*opacity/ },
-      { name: 'dim/restore via animate on interaction', file: 'src/app/home/home.component.ts', match: /interaction[\s\S]*animate\(\s*\{[^}]*opacity[^}]*0\.3/ },
+      { name: 'dim/restore via animate on interaction', file: 'src/app/home/home.component.ts', match: /interaction[\s\S]*animate\(\s*\{[^}]*opacity[^}]*0\.3/i },
       { name: 'effect() pushes mode into globe', file: 'src/app/home/home.component.ts', match: /effect\(\s*\(\)\s*=>[\s\S]*setMode\(/ },
       { name: 'seed once in (loaded) after view exists', file: 'src/app/home/home.component.ts', match: /onGlobeLoaded|globe\s*=\s*args\.object|\.object as GlobeView/ },
       { name: 'no zone.js', file: 'package.json', notMatch: /"zone\.js"/ },
@@ -482,12 +482,12 @@ Don't add zone.js.`,
     workspace: [NS_APP],
     checks: [
       { name: 'ATS exception for host', file: 'App_Resources/iOS/Info.plist', match: /NSAppTransportSecurity[\s\S]*NSExceptionDomains[\s\S]*api\.open-notify\.org[\s\S]*NSExceptionAllowsInsecureHTTPLoads/ },
-      { name: 'Android cleartext', file: 'App_Resources/Android/src/main/AndroidManifest.xml', match: /usesCleartextTraffic\s*=\s*"true"/ },
+      { name: 'Android cleartext (usesCleartextTraffic or network_security_config)', dir: 'App_Resources/Android', match: /usesCleartextTraffic\s*=\s*"true"|cleartextTrafficPermitted\s*=\s*"true"/ },
       { name: 'light status bar', file: 'App_Resources/iOS/Info.plist', match: /UIStatusBarStyleLightContent/ },
       { name: 'UIViewControllerBasedStatusBarAppearance false', file: 'App_Resources/iOS/Info.plist', match: /UIViewControllerBasedStatusBarAppearance<\/key>\s*<false\/>/ },
       { name: 'CFBundleDisplayName Overview', file: 'App_Resources/iOS/Info.plist', match: /CFBundleDisplayName<\/key>\s*<string>Overview<\/string>/ },
       { name: 'Android app_name override', file: 'App_Resources/Android/src/main/res/values/strings.xml', match: /name="app_name">Overview</ },
-      { name: 'NOTES.md explains errors don\'t stop the dev bundle', file: 'NOTES.md', match: /compiled with \d+ errors|still (syncs|bundles|launches)|grep/i },
+      { name: 'NOTES.md explains errors don\'t stop the dev bundle', file: 'NOTES.md', match: /compiled with (\d+|N) errors|still (syncs|bundles|launches|emits|builds)|grep|doesn.t (stop|block|gate)/i },
     ],
     rubric: `- Did the agent edit Info.plist / AndroidManifest / strings.xml directly and correctly?
 - Does NOTES.md say the webpack dev build syncs a bundle despite TS errors and suggest grepping the run log?

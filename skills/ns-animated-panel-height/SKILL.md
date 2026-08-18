@@ -1,6 +1,10 @@
 ---
 name: ns-animated-panel-height
 description: Use when a NativeScript panel/sheet/card must smoothly grow or shrink as its content changes (mode switches, expanding lists) on both iOS and Android — measure the body explicitly and animate the container height, avoiding the Android layoutChanged/ScrollView traps.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # Animating a panel's height to fit new content

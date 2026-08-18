@@ -1,6 +1,10 @@
 ---
 name: ns-ios-bottom-sheet-native
 description: Use when a NativeScript app wants a real iOS bottom sheet (UISheetPresentationController detents, grabber, iOS 26 system glass) instead of a hand-rolled panel — includes the Angular NativeDialogService recipe and when NOT to use it.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # Native iOS bottom sheet (UISheetPresentationController)

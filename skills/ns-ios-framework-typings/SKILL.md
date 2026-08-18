@@ -1,6 +1,10 @@
 ---
 name: ns-ios-framework-typings
 description: Use when TypeScript says "Cannot find name SCNView / CLLocationManager / CMMotionManager …" in a NativeScript iOS project — add the missing framework typings and look up exact native method names in the generated d.ts and Apple headers.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # iOS framework typings in NativeScript projects
@@ -35,7 +39,9 @@ grep -n "declare const enum SCNTransparencyMode" -A8 "$T"
 Examples: `SCNAction.group([...])` (not `groupWithActions`), `SCNView.alloc().initWithFrameOptions(rect, null)`, `NSDictionary.dictionaryWithObjectForKey(obj, key)`, `NSValue.valueWithSCNVector3(v)`.
 
 ## Missing constants
-Some `extern const` values are absent from the d.ts (e.g. `kCLLocationAccuracyKilometer`). Use the numeric value with a comment (`desiredAccuracy = 1000 // metres`).
+If an `extern const` seems missing, it is usually declared in a sibling file you have not referenced yet (`kCLLocationAccuracyKilometer` lives in `objc!_LocationEssentials.d.ts`, not `objc!CoreLocation.d.ts`) — `grep -rn "declare var kCLLocationAccuracyKilometer" node_modules/@nativescript/types-ios/lib/ios/objc-x86_64/` finds the file. Only if it is truly absent, use the numeric value with a comment (`desiredAccuracy = 1000 // metres`).
+
+Shortcut when you need many frameworks: `/// <reference path="./node_modules/@nativescript/types-ios/lib/ios/ios.d.ts" />` references every framework d.ts (slower `tsc`, zero guessing); the per-framework lines above keep type-checking fast.
 
 ## Semantics: read the header, not your memory
 Enum meanings and struct availability are documented in the SDK headers, e.g.

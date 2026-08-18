@@ -1,6 +1,10 @@
 ---
 name: ns-webpack-angular-project-notes
 description: Use when setting up or debugging a `ns create --ng` (Angular, webpack) NativeScript project — tsconfig shape, asset paths, HTTP/ATS exceptions, app id, plist keys, build-log noise — and where to go to move it to Vite.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # `ns create <app> --ng` project notes (NS 9 / Angular 20 / webpack 5)

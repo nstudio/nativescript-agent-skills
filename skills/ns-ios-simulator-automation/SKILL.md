@@ -1,6 +1,10 @@
 ---
 name: ns-ios-simulator-automation
 description: Use when developing/verifying a NativeScript app on the iOS simulator or Android emulator without a human present — screenshots, video frame-by-frame checks, taps/swipes, locating tap targets, fake location, permission grants, logs, and reading `ns run` output for errors.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # Driving the iOS simulator (and Android emulator) from the shell

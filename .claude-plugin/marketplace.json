@@ -1,0 +1,20 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "nstudio",
+  "owner": { "name": "nstudio", "url": "https://github.com/nstudio" },
+  "metadata": {
+    "description": "nstudio's Agent Skills for NativeScript: native iOS/Android APIs from TypeScript, Angular zoneless patterns, SceneKit, Canvas, Liquid Glass, location, formatting, simulator automation."
+  },
+  "plugins": [
+    {
+      "name": "nativescript-agent-skills",
+      "description": "20 code-first NativeScript skills (iOS + Android native APIs from TypeScript, Angular 20 zoneless, SceneKit, Canvas, Liquid Glass, CoreLocation, no-Intl formatting, Vite migration, simulator automation).",
+      "source": "./",
+      "strict": false,
+      "category": "development",
+      "tags": ["nativescript", "ios", "android", "angular", "mobile"],
+      "homepage": "https://github.com/nstudio/nativescript-agent-skills",
+      "skills": ["./skills/"]
+    }
+  ]
+}

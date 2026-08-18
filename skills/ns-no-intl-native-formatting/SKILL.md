@@ -1,6 +1,10 @@
 ---
 name: ns-no-intl-native-formatting
 description: Use when NativeScript output shows ungrouped numbers, "Tue Aug 18 2026 05:14:26 GMT-0700" style dates, or `Intl is not defined` — the iOS V8 runtime has no ICU, so format times/numbers with NSDateFormatter / SimpleDateFormat instead.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # Formatting without `Intl` in NativeScript

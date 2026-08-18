@@ -1,6 +1,10 @@
 ---
 name: ns-android-java-interop-gotchas
 description: Use when NativeScript Android code throws "Cannot marshal JavaScript argument … to Java type", "Failed resolving method … on class", "Class constructor X cannot be invoked without 'new'", or colours/8-digit hex render wrong — the Java interop rules that trip TypeScript authors.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # NativeScript ↔ Java interop gotchas (verified, core 9.0, API 35)

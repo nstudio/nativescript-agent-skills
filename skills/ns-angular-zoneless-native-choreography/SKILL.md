@@ -1,6 +1,10 @@
 ---
 name: ns-angular-zoneless-native-choreography
 description: Use when building a NativeScript Angular (zoneless, signals) screen that drives native views and needs polished motion — signal effects into custom views, (loaded) view refs, view.animate() intros/dims/crossfades, SegmentedBar binding, capped ScrollView heights.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # Zoneless Angular + NativeScript views: patterns that hold up

@@ -1,6 +1,10 @@
 ---
 name: ns-android-canvas-custom-view
 description: Use when a NativeScript Android view needs custom 2D drawing at 60fps (charts, globes, particle backdrops) — subclass android.view.View from TypeScript, override onDraw, tick with Choreographer, and avoid the marshalling/perf traps that bite on first try.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # Custom-drawn Android view from TypeScript

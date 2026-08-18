@@ -1,6 +1,10 @@
 ---
 name: ns-ios-cadisplaylink-render-loop
 description: Use when NativeScript iOS code needs a 60fps JS tick (custom animation loops, SceneKit/Canvas frame updates, physics) — a CADisplayLink target class that actually fires under the NativeScript runtime.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # CADisplayLink from NativeScript (iOS)

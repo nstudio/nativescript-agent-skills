@@ -1,6 +1,10 @@
 ---
 name: ns-ios-scenekit-from-typescript
 description: Use when a NativeScript iOS app needs real-time 3D (globes, planets, product viewers, particle scenes) — drive SceneKit (SCNView, materials, Metal shader modifiers, hit testing) directly from TypeScript with no plugin.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # SceneKit straight from TypeScript (NativeScript iOS)

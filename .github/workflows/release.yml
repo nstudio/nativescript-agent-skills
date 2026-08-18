@@ -1,0 +1,24 @@
+name: release
+# Tag vX.Y.Z (matching package.json) → publish to npm with provenance + GitHub release.
+# Requires npm trusted publishing (OIDC) configured for @nstudio/nativescript-agent-skills,
+# or set NPM_TOKEN and swap the publish step to use it.
+on:
+  push:
+    tags: ['v*.*.*']
+permissions:
+  contents: write
+  id-token: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, registry-url: 'https://registry.npmjs.org' }
+      - run: npm i -g npm@latest   # OIDC trusted publishing needs npm ≥ 11.5
+      - run: node evals/lint-skills.mjs && npx -y @tanstack/intent@latest validate
+      - name: Version must match tag
+        run: test "v$(node -p "require('./package.json').version")" = "${GITHUB_REF_NAME}"
+      - run: npm publish --provenance --access public
+      - uses: softprops/action-gh-release@v2
+        with: { generate_release_notes: true }

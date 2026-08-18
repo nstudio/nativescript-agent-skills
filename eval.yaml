@@ -39,7 +39,7 @@ tasks:
 
         weight: 0.3
 
-  - name: iss-tracking-with-satellite-js
+  - name: ns-iss-tracking-satellite-js
     instruction: |
       Add live ISS tracking to this NativeScript (webpack) app.
 
@@ -53,7 +53,7 @@ tasks:
         dest: "."
     graders:
       - type: deterministic
-        run: node "$SKILLGRADE_REPO/evals/graders/check.mjs" iss-tracking-with-satellite-js
+        run: node "$SKILLGRADE_REPO/evals/graders/check.mjs" ns-iss-tracking-satellite-js
         weight: 0.7
       - type: llm_rubric
         rubric: |

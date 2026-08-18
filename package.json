@@ -1,0 +1,62 @@
+{
+  "name": "@nstudio/nativescript-agent-skills",
+  "version": "0.1.0",
+  "description": "Agent Skills for NativeScript (iOS/Android native APIs from TypeScript, Angular zoneless patterns, SceneKit, Canvas, Liquid Glass, location, formatting, tooling). Works with Claude Code, Cursor, Codex, Copilot, Gemini CLI and any Agent Skills client; ships as skills/<name>/SKILL.md.",
+  "license": "MIT",
+  "author": "nstudio <oss@nstudio.io>",
+  "homepage": "https://github.com/nstudio/nativescript-agent-skills#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nstudio/nativescript-agent-skills.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nstudio/nativescript-agent-skills/issues"
+  },
+  "keywords": [
+    "nativescript",
+    "agent-skills",
+    "skills",
+    "tanstack-intent",
+    "claude-code",
+    "cursor",
+    "codex",
+    "copilot",
+    "ios",
+    "android",
+    "angular",
+    "scenekit"
+  ],
+  "type": "module",
+  "bin": {
+    "nativescript-agent-skills": "bin/cli.mjs",
+    "ns-skills": "bin/cli.mjs"
+  },
+  "files": [
+    "skills",
+    "!skills/**/.DS_Store",
+    "!skills/_artifacts",
+    "bin",
+    "skills.sh.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "lint": "node evals/lint-skills.mjs",
+    "validate": "npx -y @tanstack/intent@latest validate",
+    "check": "npm run lint && npm run validate && npm pack --dry-run",
+    "eval": "evals/run.sh",
+    "eval:smoke": "evals/run.sh --trials=1 --parallel=4 --grader=deterministic",
+    "eval:baseline": "evals/run.sh --baseline --trials=3 --parallel=3 --grader=deterministic",
+    "eval:report": "node evals/report.mjs && node evals/report-html.mjs",
+    "eval:preview": "skillgrade preview browser --output=evals/results",
+    "prepack": "npm run lint",
+    "eval:regrade": "node evals/regrade.mjs"
+  }
+}

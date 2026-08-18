@@ -1,0 +1,22 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Spec lint (name/dir, description, size, cross-refs)
+        run: node evals/lint-skills.mjs
+      - name: TanStack Intent validate
+        run: npx -y @tanstack/intent@latest validate
+      - name: Pack dry-run
+        run: npm pack --dry-run
+      - name: skills.sh discovery sees every skill
+        run: |
+          n=$(npx -y skills@latest add "$PWD" --list 2>&1 | grep -cE '^│    (ns-|iss-)') || true
+          echo "discovered $n skills"; test "$n" -eq "$(ls -d skills/*/ | wc -l | tr -d ' ')"

@@ -1,6 +1,10 @@
 ---
 name: ns-haptics-direct
 description: Use when a NativeScript app should give tactile feedback (tab change, tap confirm, success moment) — UIFeedbackGenerator on iOS and VibrationEffect on Android, no plugin.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # Haptics without a plugin

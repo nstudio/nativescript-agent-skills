@@ -1,6 +1,10 @@
 ---
 name: ns-solar-terminator-math
 description: Use when you need the sun's position from a clock — subsolar point for a day/night terminator, sun elevation at a place, day-phase words, and next sunrise/sunset — in a few dependency-free lines.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # Sun from the clock (USNO approximate solar coordinates, ±0.1°, 1950–2050)

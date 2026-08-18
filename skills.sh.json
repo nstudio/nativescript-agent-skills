@@ -1,0 +1,18 @@
+{
+  "$schema": "https://skills.sh/schema/skills.sh.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    { "title": "iOS native from TypeScript", "description": "SceneKit, CADisplayLink, Liquid Glass, native bottom sheets, framework typings.",
+      "skills": ["ns-ios-scenekit-from-typescript", "ns-ios-cadisplaylink-render-loop", "ns-liquid-glass-panel", "ns-ios-bottom-sheet-native", "ns-ios-framework-typings"] },
+    { "title": "Android native from TypeScript", "description": "Canvas custom views, Java interop marshalling rules.",
+      "skills": ["ns-android-canvas-custom-view", "ns-android-java-interop-gotchas"] },
+    { "title": "Cross-platform views & Angular", "description": "Per-platform renderers, animated panels, zoneless choreography, project setup, Vite migration.",
+      "skills": ["ns-custom-view-platform-split", "ns-animated-panel-height", "ns-angular-zoneless-native-choreography", "ns-webpack-angular-project-notes", "ns-angular-vite-migration"] },
+    { "title": "Device APIs without plugins", "description": "Location, geocoding + time zones, haptics, native date/number formatting.",
+      "skills": ["ns-corelocation-direct", "ns-clgeocoder-place-and-timezone", "ns-haptics-direct", "ns-no-intl-native-formatting"] },
+    { "title": "Tooling & assets", "description": "Simulator/emulator automation from the shell, icons and launch assets.",
+      "skills": ["ns-ios-simulator-automation", "ns-app-icons-and-launch-assets"] },
+    { "title": "Space & sky math", "description": "Dependency-free solar position and satellite tracking.",
+      "skills": ["ns-solar-terminator-math", "ns-iss-tracking-satellite-js"] }
+  ]
+}

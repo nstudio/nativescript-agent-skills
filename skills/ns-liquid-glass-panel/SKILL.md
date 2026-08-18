@@ -1,6 +1,10 @@
 ---
 name: ns-liquid-glass-panel
 description: Use when a NativeScript screen needs a frosted/glass panel or card over rich content (maps, 3D, video) — a small GlassView using UIGlassEffect on iOS 26+ (Liquid Glass), UIBlurEffect earlier, and a translucent drawable on Android.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # Glass panels in NativeScript

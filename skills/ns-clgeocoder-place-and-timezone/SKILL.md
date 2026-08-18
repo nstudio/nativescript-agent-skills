@@ -1,6 +1,10 @@
 ---
 name: ns-clgeocoder-place-and-timezone
 description: Use when a NativeScript app must turn a coordinate into a place name and its local time (tap on a map/globe, "what time is it there") — CLGeocoder reverse geocoding with CLPlacemark.timeZone on iOS, android.location.Geocoder on Android, and an ocean fallback.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # Reverse geocode + local time zone, no API keys

@@ -1,6 +1,10 @@
 ---
 name: ns-corelocation-direct
 description: Use when a NativeScript app needs the device location or compass heading without a plugin — CLLocationManager + delegate class on iOS, LocationManager on Android, plus simulator/permission setup.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # Location + heading straight from the platform
@@ -33,7 +37,7 @@ class Delegate extends NSObject implements CLLocationManagerDelegate {
 
 let manager: CLLocationManager | null = null; let delegate: Delegate | null = null;   // keep BOTH alive
 function ensure() {
-  if (!manager) { manager = CLLocationManager.new(); manager.desiredAccuracy = 1000; /* metres — kCLLocationAccuracyKilometer is NOT in the typings */ delegate = Delegate.new(); manager.delegate = delegate; }
+  if (!manager) { manager = CLLocationManager.new(); manager.desiredAccuracy = kCLLocationAccuracyKilometer; /* declared in objc!_LocationEssentials.d.ts — reference it, or use 1000 (metres) */ delegate = Delegate.new(); manager.delegate = delegate; }
   return manager;
 }
 export function requestOnce(cb: typeof onLocation) {

@@ -124,6 +124,17 @@ if (!baseline) {
   // Skill discovery is 25% of the reward; outcome quality is the rest.
   score = 0.25 * (u.passed ? 1 : 0) + 0.75 * contentScore;
 }
+// Keep the workspace (minus node_modules) + transcript for post-hoc inspection;
+// skillgrade deletes the temp dir right after grading. Disable with SKILLGRADE_KEEP_WORKSPACES=0.
+if (process.env.SKILLGRADE_KEEP_WORKSPACES !== '0') {
+  try {
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const dest = path.join(here, '..', 'results', 'workspaces', baseline ? 'baseline' : 'skills', taskName, `${stamp}-${process.pid}`);
+    fs.mkdirSync(dest, { recursive: true });
+    fs.cpSync(ws, dest, { recursive: true, filter: (src) => !/\/(node_modules|\.git)(\/|$)/.test(src) });
+    fs.writeFileSync(path.join(dest, 'GRADE.json'), JSON.stringify({ task: taskName, baseline, score, results }, null, 2));
+  } catch {}
+}
 const passedN = results.filter((r) => r.passed).length;
 console.log(JSON.stringify({
   score: Math.round(score * 1000) / 1000,

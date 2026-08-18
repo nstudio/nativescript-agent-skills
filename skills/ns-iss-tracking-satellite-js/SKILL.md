@@ -1,6 +1,10 @@
 ---
-name: iss-tracking-with-satellite-js
+name: ns-iss-tracking-satellite-js
 description: Use when an app (NativeScript or any JS) needs live satellite/ISS position, ground track, sunlit state, or "when can I see it" pass predictions — satellite.js pinning, TLE sourcing with offline fallback, and the visibility math.
+license: MIT
+metadata:
+  author: nstudio
+  source: https://github.com/nstudio/nativescript-agent-skills
 ---
 
 # ISS tracking with satellite.js (offline-capable)
