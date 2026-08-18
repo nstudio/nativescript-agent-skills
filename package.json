@@ -1,6 +1,6 @@
 {
   "name": "@nstudio/nativescript-agent-skills",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Agent Skills for NativeScript (iOS/Android native APIs from TypeScript, Angular zoneless patterns, SceneKit, Canvas, Liquid Glass, location, formatting, tooling). Works with Claude Code, Cursor, Codex, Copilot, Gemini CLI and any Agent Skills client; ships as skills/<name>/SKILL.md.",
   "license": "MIT",
   "author": "nstudio <oss@nstudio.io>",
