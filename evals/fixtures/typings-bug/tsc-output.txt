@@ -1,0 +1,8 @@
+$ npx tsc --noEmit -p tsconfig.json
+src/app/native/scene.ios.ts:4:19 - error TS2304: Cannot find name 'SCNScene'.
+src/app/native/scene.ios.ts:6:23 - error TS2304: Cannot find name 'SCNView'.
+src/app/native/scene.ios.ts:7:15 - error TS2304: Cannot find name 'SCNView'.
+src/app/native/scene.ios.ts:15:13 - error TS2304: Cannot find name 'CLLocation'.
+src/app/native/scene.ios.ts:16:13 - error TS2304: Cannot find name 'CLLocation'.
+
+Found 5 errors in the same file, starting at: src/app/native/scene.ios.ts:4

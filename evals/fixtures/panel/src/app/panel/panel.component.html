@@ -1,0 +1,14 @@
+<StackLayout class="p-4">
+  <SegmentedBar [selectedIndex]="store.mode() === 'earth' ? 0 : 1" (selectedIndexChanged)="store.setModeIndex($event.newIndex)">
+    <SegmentedBarItem title="Earth"></SegmentedBarItem>
+    <SegmentedBarItem title="Look up"></SegmentedBarItem>
+  </SegmentedBar>
+  @if (store.mode() === 'earth') {
+    <Label text="The ISS is over the Pacific Ocean." class="text-white mt-2"></Label>
+    <Label text="Next pass in 42 min." class="text-white"></Label>
+  } @else {
+    @for (item of items; track item) {
+      <Label [text]="item" class="text-white mt-1"></Label>
+    }
+  }
+</StackLayout>
