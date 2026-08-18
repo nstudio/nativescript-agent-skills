@@ -1,27 +1,88 @@
 name: release
-# Tag vX.Y.Z (matching package.json) → publish to npm with provenance + GitHub release.
-# Requires npm trusted publishing (OIDC) configured for @nstudio/nativescript-agent-skills
-# (publisher: this repo, workflow release.yml). To use a token instead, add registry-url back
-# to setup-node and pass NODE_AUTH_TOKEN from a secret on the publish step.
+# Tag vX.Y.Z (matching package.json) → publish to npm with provenance via OIDC trusted
+# publishing, then create the GitHub release. Mirrors NativeScript's secure_nx_release.yml
+# minus the Nx pieces (single package, version already in package.json).
+#
+# npm trusted publisher for @nstudio/nativescript-agent-skills must be:
+#   GitHub Actions · owner nstudio · repo nativescript-agent-skills · workflow release.yml · environment npm-publish
+# Token fallback: set repo/environment variable USE_NPM_TOKEN=true and secret NPM_PUBLISH_TOKEN.
 on:
   push:
     tags: ['v*.*.*']
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
-  contents: write
-  id-token: write
+  contents: write        # GitHub release
+  id-token: write        # npm provenance / trusted publishing (OIDC)
+
 jobs:
   publish:
+    name: Publish (gated by environment)
+    if: ${{ github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
+    environment:
+      name: npm-publish
     steps:
+      - name: Harden the runner (audit all outbound calls)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
       - uses: actions/checkout@v4
-      # No registry-url here: setup-node would write an _authToken placeholder into .npmrc,
-      # and npm then uses that instead of the OIDC identity (→ 404 on publish).
-      - uses: actions/setup-node@v4
-        with: { node-version: 22 }
-      - run: npm i -g npm@latest   # OIDC trusted publishing needs npm ≥ 11.5
-      - run: node evals/lint-skills.mjs && npx -y @tanstack/intent@latest validate
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Update npm (required for OIDC trusted publishing)
+        run: |
+          npm install -g npm@^11.5.1
+          npm --version
+
+      - name: Lint skills + Intent validate
+        run: node evals/lint-skills.mjs && npx -y @tanstack/intent@latest validate
+
       - name: Version must match tag
         run: test "v$(node -p "require('./package.json').version")" = "${GITHUB_REF_NAME}"
-      - run: npm publish --provenance --access public
-      - uses: softprops/action-gh-release@v2
-        with: { generate_release_notes: true }
+
+      # OIDC trusted publishing (default). Clear every trace of token auth first — a leftover
+      # _authToken (even setup-node's placeholder) makes npm skip the OIDC exchange.
+      - name: npm publish (OIDC)
+        if: ${{ vars.USE_NPM_TOKEN != 'true' }}
+        shell: bash
+        env:
+          NPM_CONFIG_PROVENANCE: true
+          NODE_AUTH_TOKEN: ""
+        run: |
+          set -euo pipefail
+          unset NODE_AUTH_TOKEN
+          rm -f ~/.npmrc || true
+          if [[ -n "${NPM_CONFIG_USERCONFIG:-}" ]]; then
+            rm -f "$NPM_CONFIG_USERCONFIG" || true
+          fi
+          npm publish --access public --tag latest
+
+      # Token fallback (only when USE_NPM_TOKEN=true).
+      - name: npm publish (token)
+        if: ${{ vars.USE_NPM_TOKEN == 'true' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
+        run: npm publish --access public --tag latest
+
+      - name: GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "- package: $(node -p "require('./package.json').name")@$(node -p "require('./package.json').version")"
+          echo "- tag: ${GITHUB_REF_NAME}"
+          echo "- use-token: ${{ vars.USE_NPM_TOKEN == 'true' }}"
