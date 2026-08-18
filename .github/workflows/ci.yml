@@ -18,5 +18,8 @@ jobs:
         run: npm pack --dry-run
       - name: skills.sh discovery sees every skill
         run: |
-          n=$(npx -y skills@latest add "$PWD" --list 2>&1 | grep -cE '^│    (ns-|iss-)') || true
-          echo "discovered $n skills"; test "$n" -eq "$(ls -d skills/*/ | wc -l | tr -d ' ')"
+          out=$(CI=1 npx -y skills@latest add "$PWD" --list 2>&1 | sed -E 's/\x1b\[[0-9;?]*[A-Za-z]//g')
+          n=$(printf '%s\n' "$out" | grep -oE 'Found [0-9]+ skills' | grep -oE '[0-9]+' | head -1)
+          want=$(ls -d skills/*/ | wc -l | tr -d ' ')
+          echo "skills CLI found ${n:-0} skills, repo has $want"
+          [ "${n:-0}" -eq "$want" ] || { printf '%s\n' "$out" | tail -40; exit 1; }
