@@ -1,6 +1,5 @@
 # NativeScript Agent Skills
 
-[![skills.sh](https://skills.sh/b/nstudio/nativescript-agent-skills)](https://skills.sh/nstudio/nativescript-agent-skills)
 [![npm](https://img.shields.io/npm/v/@nstudio/nativescript-agent-skills.svg)](https://www.npmjs.com/package/@nstudio/nativescript-agent-skills)
 
 Reusable, code-first [Agent Skills](https://agentskills.io) for AI coding agents (Claude Code, Cursor, Codex, Copilot, Gemini CLI and any other client of the open standard) working on **NativeScript** projects. Each skill is a folder with a `SKILL.md`: a one-line `description` the agent matches on, then concrete TypeScript that has actually run, plus the pitfalls around it.
