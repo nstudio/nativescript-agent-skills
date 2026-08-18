@@ -22,8 +22,10 @@ for (const task of fs.readdirSync(wsRoot).sort()) {
   if (!files.length) { console.log(`${task}: no result file`); continue; }
   const resPath = path.join(resDir, files[files.length - 1]);
   const report = JSON.parse(fs.readFileSync(resPath, 'utf8'));
-  const runs = fs.readdirSync(path.join(wsRoot, task)).sort();
-  if (runs.length !== report.trials.length) { console.log(`${task}: ${runs.length} workspaces vs ${report.trials.length} trials — skipped`); continue; }
+  // newest N workspaces belong to the newest result file (older runs keep their snapshots)
+  const all = fs.readdirSync(path.join(wsRoot, task)).sort();
+  const runs = all.slice(-report.trials.length);
+  if (runs.length !== report.trials.length) { console.log(`${task}: ${all.length} workspaces vs ${report.trials.length} trials — skipped`); continue; }
   const before = report.trials.map((t) => t.reward);
   runs.forEach((run, i) => {
     const r = spawnSync(process.execPath, [path.join(root, 'evals/graders/check.mjs'), task], { cwd: path.join(wsRoot, task, run), encoding: 'utf8', env });

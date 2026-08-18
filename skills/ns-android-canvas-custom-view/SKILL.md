@@ -12,6 +12,11 @@ metadata:
 Verified on a Pixel 6a API 35 emulator (SwiftShader) with @nativescript/core 9.0.
 Marshalling rules referenced here are collected in `ns-android-java-interop-gotchas`.
 
+Three rules the runtime enforces (each one is a crash, not a warning):
+1. `@NativeClass()` subclass at **module scope**, `return global.__native(this)` in its constructor, owner via `WeakRef`.
+2. Everything you hand to `Canvas`/`Paint` is a **plain `number[]`** — declare the fields as `number[]` (`private readonly xy: number[] = []`), never `Float32Array`/`Int32Array`, not even as the backing store you copy from.
+3. Gradient colours/stops (`RadialGradient`, `LinearGradient`) are **typed Java arrays** from `Array.create('int' | 'float', n)`.
+
 ```ts
 import { Utils, View } from '@nativescript/core';
 
@@ -39,7 +44,8 @@ export class DotsView extends View {
   private frameCallback: android.view.Choreographer.FrameCallback | null = null;
   private lastNanos = 0;
   private readonly paint = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
-  private readonly xy: number[] = [];               // plain JS array → marshals to float[]
+  private readonly xy: number[] = [];               // plain number[] → marshals to float[]; a Float32Array here would fail at drawPoints
+  private readonly px: number[] = []; private readonly py: number[] = [];   // positions too — keep the whole pipeline number[]
 
   createNativeView(): android.view.View {
     const v = new DotsSurface(this._context);

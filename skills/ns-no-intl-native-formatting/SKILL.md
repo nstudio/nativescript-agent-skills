@@ -15,10 +15,12 @@ returns the long default string. Android's V8 may have it, but write one path th
 works: ask the platform's own formatters (they also honour the user's 12/24-hour setting and
 render a moment in any IANA time zone).
 
+Two rules: **never** `Intl`/`toLocaleString` (undefined or wrong on iOS), and **cache every formatter** — creating an `NSDateFormatter` or `SimpleDateFormat` per call is milliseconds each and shows up when a list re-renders every second. One `Map` keyed by `template|timeZone` per platform, as below.
+
 ```ts
 import { isIOS } from '@nativescript/core';
 
-const iosFormatters = new Map<string, NSDateFormatter>();
+const iosFormatters = new Map<string, NSDateFormatter>();          // cache: template|tz → formatter
 function iosFormatter(template: string, timeZone?: string): NSDateFormatter {
   const key = `${template}|${timeZone ?? ''}`;
   let f = iosFormatters.get(key);
@@ -33,13 +35,23 @@ function iosFormatter(template: string, timeZone?: string): NSDateFormatter {
   return f;
 }
 
+const androidFormatters = new Map<string, java.text.SimpleDateFormat>();  // same cache on Android
+function androidFormatter(template: string, timeZone?: string): java.text.SimpleDateFormat {
+  const key = `${template}|${timeZone ?? ''}`;
+  let f = androidFormatters.get(key);
+  if (!f) {
+    const locale = java.util.Locale.getDefault();
+    const pattern = android.text.format.DateFormat.getBestDateTimePattern(locale, template);
+    f = new java.text.SimpleDateFormat(pattern, locale);
+    if (timeZone) f.setTimeZone(java.util.TimeZone.getTimeZone(timeZone));
+    androidFormatters.set(key, f);
+  }
+  return f;
+}
+
 function formatWithTemplate(date: Date, template: string, timeZone?: string): string {
   if (isIOS) return iosFormatter(template, timeZone).stringFromDate(date);  // JS Date marshals to NSDate directly
-  const locale = java.util.Locale.getDefault();
-  const pattern = android.text.format.DateFormat.getBestDateTimePattern(locale, template);
-  const sdf = new java.text.SimpleDateFormat(pattern, locale);
-  if (timeZone) sdf.setTimeZone(java.util.TimeZone.getTimeZone(timeZone));
-  return sdf.format(new java.util.Date(date.getTime()));
+  return androidFormatter(template, timeZone).format(new java.util.Date(date.getTime()));
 }
 
 export const formatTime = (d: Date, tz?: string) => formatWithTemplate(d, 'jmm', tz);      // "9:42 PM"
@@ -57,5 +69,5 @@ export function groupDigits(n: number): string {                                
 Notes
 * Don't pass `NSDate.dateWithTimeIntervalSince1970(...)` — the typings expect a JS `Date` and the runtime converts.
 * Templates are Unicode skeletons (`jmm`, `Hmm`, `EEE`, `MMMd`, `yMMMd jm`).
-* Cache formatters; `NSDateFormatter` creation is expensive.
+* Clear the caches if the app reacts to locale changes (`Application.on('systemAppearanceChanged')` won't fire for locale — listen for `NSCurrentLocaleDidChangeNotification` / `ACTION_LOCALE_CHANGED` if you care).
 * For a "solar clock" at a spot with no zone (open ocean) format a synthetic UTC date with `formatTime(d, 'UTC')`.

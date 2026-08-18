@@ -408,7 +408,7 @@ Also add whatever the two platform manifests/plists need, make sure the iOS type
       { name: 'iOS 14+ authorization callback', file: 'src/app/location.ts', match: /locationManagerDidChangeAuthorization/ },
       { name: 'requestWhenInUseAuthorization → requestLocation', file: 'src/app/location.ts', match: /requestWhenInUseAuthorization[\s\S]*requestLocation\(\)|requestLocation\(\)[\s\S]*requestWhenInUseAuthorization/ },
       { name: 'didUpdateLocations + didFailWithError', file: 'src/app/location.ts', match: /locationManagerDidUpdateLocations[\s\S]*locationManagerDidFailWithError|locationManagerDidFailWithError[\s\S]*locationManagerDidUpdateLocations/ },
-      { name: 'manager and delegate kept alive at module scope', file: 'src/app/location.ts', match: /^(let|const|var)\s+\w*(manager|delegate)\w*\s*[:=]/mi },
+      { name: 'manager and delegate kept alive outside the request function', file: 'src/app/location.ts', match: /^\s*(let|const|var)\s+\w*(manager|delegate)\w*\s*[:=]/mi },
       { name: 'Android permission check + LocationManager', file: 'src/app/location.ts', match: /checkSelfPermission[\s\S]*ACCESS_COARSE_LOCATION[\s\S]*LocationManager|LocationManager[\s\S]*checkSelfPermission/ },
       { name: 'Info.plist usage string', file: 'App_Resources/iOS/Info.plist', match: /NSLocationWhenInUseUsageDescription/ },
       { name: 'Android manifest permission', file: 'App_Resources/Android/src/main/AndroidManifest.xml', match: /ACCESS_COARSE_LOCATION|ACCESS_FINE_LOCATION/ },

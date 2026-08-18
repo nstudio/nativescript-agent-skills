@@ -11,7 +11,15 @@ metadata:
 
 Verified: iOS 26.5 simulator (one-shot location + authorization flow) and Pixel 6a API 35 emulator (LocationManager + `android.location.Geocoder`).
 
-## iOS: CLLocationManager with a TypeScript delegate
+## iOS — step 1: typings (do this first; without it `CLLocationManager`, `CLLocation`, `CLAuthorizationStatus` are "Cannot find name")
+Append to the project's `references.d.ts` (both lines — `CLLocation` itself is declared in `_LocationEssentials`):
+```ts
+/// <reference path="./node_modules/@nativescript/types-ios/lib/ios/objc-x86_64/objc!CoreLocation.d.ts" />
+/// <reference path="./node_modules/@nativescript/types-ios/lib/ios/objc-x86_64/objc!_LocationEssentials.d.ts" />
+```
+(background: `ns-ios-framework-typings`.)
+
+## iOS — step 2: CLLocationManager with a TypeScript delegate
 ```ts
 let onLocation: ((loc: { lat: number; lon: number } | null, error?: string) => void) | null = null;
 let onHeading: ((trueHeading: number) => void) | null = null;
@@ -51,7 +59,7 @@ export const headingAvailable = () => CLLocationManager.headingAvailable();
 export function startHeading(cb: (deg: number) => void) { onHeading = cb; const m = ensure(); m.headingFilter = 2; m.startUpdatingHeading(); }
 export function stopHeading() { onHeading = null; manager?.stopUpdatingHeading(); }
 ```
-Typings: reference `objc!CoreLocation.d.ts` **and** `objc!_LocationEssentials.d.ts` (CLLocation lives there). Info.plist:
+## iOS — step 3: Info.plist
 ```xml
 <key>NSLocationWhenInUseUsageDescription</key><string>Why you need it, in one human sentence.</string>
 ```
