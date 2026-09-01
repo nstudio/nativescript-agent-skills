@@ -42,6 +42,7 @@ Details, trade-offs and the release process: [docs/DISTRIBUTION.md](docs/DISTRIB
 | `ns-solar-terminator-math` | you need the sun from the clock: subsolar point, elevation, day phase, sunrise/sunset — dependency-free |
 | `ns-webpack-angular-project-notes` | you're setting up or debugging an `ns create --ng` project (tsconfig, assets, ATS, plist/manifest, log noise) |
 | `ns-angular-vite-migration` | you're moving a NativeScript Angular project from webpack to @nativescript/vite (working version set, bundled analogjs patch, configs, NG0210 + Android FORTIFY launch crashes) |
+| `ns-norrix-ota` | you're adding OTA updates via @norrix/client-sdk — the peer-dep install trap, the wrapper util (dev gating, deferred init, `sync()`), and the overlay-teardown-before-reload rule that prevents the post-apply black screen |
 
 Verified environment: macOS, Xcode 26.5, iOS 26.5 simulator, Android emulator Pixel 6a API 35 (SwiftShader), NativeScript CLI 9.1, @nativescript/core 9.1.
 

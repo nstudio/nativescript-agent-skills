@@ -557,4 +557,32 @@ Use a version set that is known to work together, add whatever config files the 
 - Did it cover Android mipmaps (and ideally the adaptive-icon foreground)?
 - Did it mention App_Resources changes need a full rebuild / ns clean?`,
   },
+
+  // ───────────────────────────── OTA / app delivery ─────────────────────────────
+  {
+    name: 'norrix-ota',
+    skill: 'ns-norrix-ota',
+    instruction: `Add over-the-air (OTA) updates to this NativeScript app with Norrix (\`@norrix/client-sdk\`). Do NOT run npm install or a build here (no network in this environment) — file changes only.
+
+1. Add the dependency to package.json.
+2. Create \`src/app/norrix.ts\` — one wrapper module that owns the SDK (components never touch it directly) — exporting:
+   - \`initOta()\`, called once at app launch: OTA must be completely inert in dev builds, and any network work must stay off the boot path.
+   - \`checkForUpdatesNow()\` for a Settings page button — with automatic installs on, use the SDK call that runs the full check → download → install flow.
+   - \`applyUpdateNow(versionLabel: string)\` for an "Apply now" button: show a RootLayout progress overlay, then apply with a soft reboot when the runtime supports it (process restart otherwise). Users must never see a black screen after the reload.
+3. Surface update status to the UI through one reactive source, and route an update that requires a store update to the store instead of applying it.`,
+    workspace: [NS_APP],
+    checks: [
+      { name: '@norrix/client-sdk added', file: 'package.json', match: /"@norrix\/client-sdk"\s*:/ },
+      { name: 'inert in dev builds', file: 'src/app/norrix.ts', match: /__DEV__/ },
+      { name: 'init deferred off the boot path', file: 'src/app/norrix.ts', match: /setTimeout\(/ },
+      { name: 'manual check uses sync()', file: 'src/app/norrix.ts', match: /\.sync\(/ },
+      { name: 'not the bare checkForUpdates() SDK call', file: 'src/app/norrix.ts', notMatch: /\.checkForUpdates\(/ },
+      { name: 'requiresStoreUpdate routed to the store', file: 'src/app/norrix.ts', match: /requiresStoreUpdate/ },
+      { name: 'soft-reboot with process-restart fallback', file: 'src/app/norrix.ts', match: /soft-reboot[\s\S]*process-restart|process-restart[\s\S]*soft-reboot/ },
+      { name: 'overlay torn down (awaited) before apply', weight: 2, file: 'src/app/norrix.ts', match: /await\s+[\w.]*(close|hide|dismiss|teardown|remove)[\w.]*\([\s\S]*?applyUpdate/i },
+    ],
+    rubric: `- Did the agent await FULL teardown of the RootLayout overlay (views actually leaving the RootLayout) before calling applyUpdate, ideally explaining that the iOS soft reboot only swaps the JS isolate and never removes native views (the black-screen cause)?
+- Manual check via sync() (full check → download → install with installUpdatesAutomatically) rather than checkForUpdates()?
+- Init gated on !__DEV__ and deferred with a setTimeout so network stays off the boot path, and requiresStoreUpdate routed to the store rather than applied?`,
+  },
 ];
