@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.0 (2026-09-01)
+
+### Skills
+
+  * New: `ns-norrix-ota` — OTA (over-the-air) updates via `@norrix/client-sdk`: the `--legacy-peer-deps` install trap on prerelease core, a single `norrix.ts` wrapper (inert in dev, deferred init off the boot path, `sync()` for manual checks, `requiresStoreUpdate` routed to the store, OTA version from `ApplicationSettings`), soft-reboot vs process-restart apply, and the hard rule that the RootLayout progress overlay must be fully torn down before the reload — the iOS soft reboot never removes native views, so a lingering overlay renders as a black screen.
+
+### Evals
+
+* `norrix-ota` task: wrapper-module graders (dev gating, deferred init, `sync()` for the manual check, store-update routing, soft-reboot/process-restart fallback, awaited overlay teardown before `applyUpdate`).
+
 ## 1.0.0 (2026-08-18)
 
 ### Skills
