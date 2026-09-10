@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### Skills
+
+  * New: `ns-input-accessory` — setting up `@nativescript/input-accessory` for a keyboard-docked chat/composer bar in any flavor: the ScrollView + transparent container + `TextView` contract (never `TextField`, `minHeight` on both pill and TextView, send button as a sibling column, no `returnPress`), a framework-neutral `ComposerDock` controller that runs `setup()` once from the three `loaded` events with explicit `baseHeight`/`containerPadding` (a container taller than 50pt silently falls back to 48 and squeezes the pill), text centering from the font line height via style padding (core re-applies CSS padding onto `textContainerInset` on every style pass, so a raw native write drifts), the tab-bar and IQKeyboardManager exclusions, the Android gesture-nav inset when the root skips the bottom edge, suspend/restore around sheets vs. fullscreen modals, and a bundled 1.0.3 patch (`suspend()`/`restore()`, modal recovery, scroll past `maxHeight`, default input traits, `collapsedHorizontalInset`).
+
+### Evals
+
+* `input-accessory-composer` task: chat-screen graders (plugin dependency, TextView not TextField, `*, auto` grid with a ScrollView, `setup()` receiving all four views, explicit `baseHeight` + `containerPadding`, `updateAccessoryHeight()`, `cleanup()` in `ngOnDestroy`, a single guarded manager construction, line-height-derived style padding with no `textContainerInset`, no `returnPress`/`returnKeyType`, `minHeight="44"` on the TextView, no `dismissSoftInput`, `chat` route).
+
 ## 1.1.0 (2026-09-01)
 
 ### Skills

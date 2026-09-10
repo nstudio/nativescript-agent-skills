@@ -1,6 +1,6 @@
 {
   "name": "nativescript-agent-skills",
-  "description": "21 code-first NativeScript skills for AI coding agents: iOS + Android native APIs from TypeScript, Angular 20 zoneless patterns, SceneKit, Canvas, Liquid Glass, CoreLocation, no-Intl formatting, Vite migration, simulator automation, Norrix OTA updates.",
+  "description": "22 code-first NativeScript skills for AI coding agents: iOS + Android native APIs from TypeScript, Angular 20 zoneless patterns, SceneKit, Canvas, Liquid Glass, CoreLocation, no-Intl formatting, Vite migration, simulator automation, Norrix OTA updates, keyboard-docked composer.",
   "author": { "name": "nstudio", "url": "https://github.com/nstudio" },
   "homepage": "https://github.com/nstudio/nativescript-agent-skills",
   "repository": "https://github.com/nstudio/nativescript-agent-skills",

@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "nativescript-agent-skills",
-      "description": "21 code-first NativeScript skills (iOS + Android native APIs from TypeScript, Angular 20 zoneless, SceneKit, Canvas, Liquid Glass, CoreLocation, no-Intl formatting, Vite migration, simulator automation, Norrix OTA updates).",
+      "description": "22 code-first NativeScript skills (iOS + Android native APIs from TypeScript, Angular 20 zoneless, SceneKit, Canvas, Liquid Glass, CoreLocation, no-Intl formatting, Vite migration, simulator automation, Norrix OTA updates, keyboard-docked composer).",
       "source": "./",
       "strict": false,
       "category": "development",

@@ -502,3 +502,24 @@ tasks:
           - Init gated on !__DEV__ and deferred with a setTimeout so network stays off the boot path, and requiresStoreUpdate routed to the store rather than applied?
 
         weight: 0.3
+
+  - name: input-accessory-composer
+    instruction: |
+      Add a chat screen to this NativeScript Angular app with an input bar that docks to the keyboard like iMessage: the bar rides up and down with the keyboard, grows as the user types more lines, and the message list scrolls above it. Use `@nativescript/input-accessory` for the docking (add it to package.json — do NOT run npm install or a native build here, no network).
+
+      Create `src/app/chat/chat.component.ts` + `src/app/chat/chat.component.html` (standalone `ChatComponent`; a signal-backed message list is fine, and "send" just appends to it) and route it at `chat`. The input pill and its send button are 44pt tall at rest, and the placeholder must sit vertically centered in the pill on both platforms. Finish with a short note on what the rest of the app has to respect for this screen to work (navigation, other keyboard plugins, dialogs).
+
+    workspace:
+      - src: "../../evals/fixtures/ns-app"
+        dest: "."
+    graders:
+      - type: deterministic
+        run: node "$SKILLGRADE_REPO/evals/graders/check.mjs" input-accessory-composer
+        weight: 0.7
+      - type: llm_rubric
+        rubric: |
+          - Did the agent pass real geometry to setup() (baseHeight = pill height + container vertical padding, containerPadding = that padding) and explain that a container taller than 50pt silently falls back to 48 and squeezes the pill?
+          - Did it center the placeholder by setting the TextView's style/CSS padding from the font line height AFTER setup() — not by writing UITextView.textContainerInset — and use a TextView with minHeight on both the pill and the TextView (never a TextField)?
+          - Did its closing note cover: no tab bar on this screen (route it outside any tab shell), IQKeyboardManager must be disabled for the page if the app uses it, and sheets/dialogs need suspend()/restore() (fullscreen modals need restore) because the bar lives in the keyboard's own window above sheets?
+
+        weight: 0.3

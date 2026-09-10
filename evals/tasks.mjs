@@ -585,4 +585,41 @@ Use a version set that is known to work together, add whatever config files the 
 - Manual check via sync() (full check → download → install with installUpdatesAutomatically) rather than checkForUpdates()?
 - Init gated on !__DEV__ and deferred with a setTimeout so network stays off the boot path, and requiresStoreUpdate routed to the store rather than applied?`,
   },
+
+  // ───────────────────────────── keyboard / input plugins ─────────────────────────────
+  {
+    name: 'input-accessory-composer',
+    skill: 'ns-input-accessory',
+    instruction: `Add a chat screen to this NativeScript Angular app with an input bar that docks to the keyboard like iMessage: the bar rides up and down with the keyboard, grows as the user types more lines, and the message list scrolls above it. Use \`@nativescript/input-accessory\` for the docking (add it to package.json — do NOT run npm install or a native build here, no network).
+
+Create \`src/app/chat/chat.component.ts\` + \`src/app/chat/chat.component.html\` (standalone \`ChatComponent\`; a signal-backed message list is fine, and "send" just appends to it) and route it at \`chat\`. The input pill and its send button are 44pt tall at rest, and the placeholder must sit vertically centered in the pill on both platforms. Finish with a short note on what the rest of the app has to respect for this screen to work (navigation, other keyboard plugins, dialogs).`,
+    workspace: [NS_APP],
+    checks: [
+      { name: 'plugin added to package.json', file: 'package.json', match: /"@nativescript\/input-accessory"\s*:/ },
+      { name: 'TextView, not TextField', file: 'src/app/chat/chat.component.html', match: /<TextView/, notMatch: /<TextField/ },
+      { name: 'ScrollView above an auto-sized bottom row', file: 'src/app/chat/chat.component.html', match: /rows="[^"]*\*,\s*auto"[\s\S]*<ScrollView/ },
+      { name: 'setup() gets page, scrollView, inputContainer, textView', file: 'src/app/chat/chat.component.ts', match: /\.setup\(\s*\{[\s\S]*?\bpage\b[\s\S]*?\bscrollView\b[\s\S]*?\binputContainer\b[\s\S]*?\btextView\b[\s\S]*?\}\s*\)/ },
+      { name: 'explicit baseHeight + containerPadding', weight: 2, file: 'src/app/chat/chat.component.ts', match: /baseHeight\s*:[\s\S]*?containerPadding\s*:|containerPadding\s*:[\s\S]*?baseHeight\s*:/ },
+      { name: 'updateAccessoryHeight on text change', file: 'src/app/chat/chat.component.ts', match: /updateAccessoryHeight\(\)/ },
+      { name: 'cleanup on destroy', file: 'src/app/chat/chat.component.ts', match: /ngOnDestroy[\s\S]*?\.cleanup\(\)/ },
+      { name: 'one guarded setup (manager created once)', custom: async ({ read }) => {
+        const s = read('src/app/chat/chat.component.ts') || '';
+        const n = (s.match(/new InputAccessoryManager\(/g) || []).length;
+        if (n !== 1) return { passed: false, message: `${n} InputAccessoryManager constructions` };
+        const idx = s.indexOf('new InputAccessoryManager(');
+        const before = s.slice(Math.max(0, idx - 400), idx);
+        const guarded = /if\s*\([^)]*\|\|[^)]*!/.test(before) && /return/.test(before);
+        return { passed: guarded, message: guarded ? 'guard found before construction' : 'no all-views-loaded guard before construction' };
+      } },
+      { name: 'text centered via style padding from the line height', weight: 2, file: 'src/app/chat/chat.component.ts', match: /(lineHeight|getLineHeight)[\s\S]*?padding(Top|Bottom)|padding(Top|Bottom)[\s\S]*?(lineHeight|getLineHeight)/ },
+      { name: 'no native textContainerInset write', file: 'src/app/chat/chat.component.ts', notMatch: /textContainerInset/ },
+      { name: 'return key does not send', file: 'src/app/chat/chat.component.html', notMatch: /returnKeyType|returnPress/ },
+      { name: 'TextView minHeight keeps the pill from collapsing', file: 'src/app/chat/chat.component.html', match: /<TextView[^>]*minHeight="44"/ },
+      { name: 'no dismissSoftInput after send', weight: 0.5, file: 'src/app/chat/chat.component.ts', notMatch: /dismissSoftInput/ },
+      { name: 'routed at chat', weight: 0.5, file: 'src/app/app.routes.ts', match: /path:\s*['"]chat['"]/ },
+    ],
+    rubric: `- Did the agent pass real geometry to setup() (baseHeight = pill height + container vertical padding, containerPadding = that padding) and explain that a container taller than 50pt silently falls back to 48 and squeezes the pill?
+- Did it center the placeholder by setting the TextView's style/CSS padding from the font line height AFTER setup() — not by writing UITextView.textContainerInset — and use a TextView with minHeight on both the pill and the TextView (never a TextField)?
+- Did its closing note cover: no tab bar on this screen (route it outside any tab shell), IQKeyboardManager must be disabled for the page if the app uses it, and sheets/dialogs need suspend()/restore() (fullscreen modals need restore) because the bar lives in the keyboard's own window above sheets?`,
+  },
 ];

@@ -6,11 +6,11 @@ Two layers, both runnable from a clone with no API key:
 |---|---|---|---|
 | Static spec lint | `npm run lint` (`evals/lint-skills.mjs`) | Node | frontmatter (`name` == dir, ≤64 chars, description ≤1024, spec-only keys), body < 500 lines, sibling cross-refs resolve, provenance line, no elided code, bundled files exist |
 | Intent validate | `npm run validate` | Node + network | TanStack Intent's packaging rules pass |
-| Behavioural (skillgrade) | `npm run eval:smoke` … | Node, `skillgrade` (`npm i -g skillgrade`), a logged-in `claude` CLI, macOS (`sips`) for the icons task | an agent given a realistic prompt **finds** the right skill among all 20 and **produces** the outcome the skill teaches |
+| Behavioural (skillgrade) | `npm run eval:smoke` … | Node, `skillgrade` (`npm i -g skillgrade`), a logged-in `claude` CLI, macOS (`sips`) for the icons task | an agent given a realistic prompt **finds** the right skill among all 22 and **produces** the outcome the skill teaches |
 
 ## How the skillgrade suite is built
 
-* `evals/tasks.mjs` — the single source of truth: 20 tasks (one per skill). Each has a realistic instruction that **never names the skill**, fixture files, deterministic `checks`, and an `llm_rubric`.
+* `evals/tasks.mjs` — the single source of truth: 22 tasks (one per skill). Each has a realistic instruction that **never names the skill**, fixture files, deterministic `checks`, and an `llm_rubric`.
 * `evals/build.mjs` renders it into `./eval.yaml` (skills on) and `evals/baseline/eval.yaml` (identical tasks, no skills). Both are generated — edit `tasks.mjs`.
 * `evals/agent/claude-cli.sh` — a skillgrade `command` agent that runs `claude -p --output-format stream-json` and keeps the tool transcript in `.agent-log/`, so the grader can see whether the `Skill` tool was invoked (the built-in `claude` adapter only keeps the final answer).
 * `evals/graders/check.mjs <task>` — generic grader: runs the task's checks + an automatic **skill-loaded** check. Reward = 0.25 × loaded + 0.75 × weighted outcome checks. `SKILLGRADE_BASELINE=1` drops the loaded check.
